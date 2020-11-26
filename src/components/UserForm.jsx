@@ -1,56 +1,106 @@
 import React, { useState } from  'react';
- 
+
     
 const UserForm = (props) => {
-    const [username, setUsername] = useState("");
-    const [lastname, setLastname] = useState("");
-    const [email, setEmail] = useState("");
-    const [password, setPassword] = useState("");  
-    const [conpass, setConpass] = useState("");  
-    
-    const createUser = (e) => {
-        e.preventDefault();
-        const newUser = { username,lastname, email, password, conpass };
-        console.log("Welcome", newUser);
-    };
-    
+
+       const [values, setValues] = useState({username: "",lastname:"", email: "",  conpass:"", password: "" });
+       const [errors, setErrors] = useState({});
+
+     const handleChange = event => {
+        const { name, value } = event.target;
+        setValues({
+            ...values,
+            [name]: value
+          });
+          
+        };
+
+
+     const handleSubmit = event => {
+        event.preventDefault(event.target.name);
+        // setErrors(validate(values));
+        // setIsSubmitting(true);
+        submit();
+      };
+    function submit(){
+        let a = validateLogin(values) ;
+        setErrors(a);
+        console.log(a)
+         }
+
+
+     function validateLogin(values) {
+        let errors = {};
+        if (values.username.length< 2)
+        {
+            errors.firstname = "first name must be at leaste 2 characters";
+        }
+
+        if (values.lastname.length< 2)
+        {
+            errors.lastname = "last name  must be at leaste 2 characters";
+        } 
+         if (values.email.length > 4) {     
+            if (/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(values.email) != true)
+            {
+                errors.email = "Email address is invalid";
+            } 
+                    } else { errors.email2 = "email field must be at least 5 characters";} 
+     
+          if (values.password !== values.conpass) {
+              console.log("smaller 5")
+          errors.password = ("the confirmed password not matched");
+                 }
+        return  errors;
+      }
+
+
     return(
     <div className="container">
     <div className="jumbotron bg-dark text-light">
-        <h1><span className="text-warning"></span></h1>
+        <h1> login<span className="text-warning"> form</span></h1>
       </div>
      
-        <form onSubmit={ createUser }>
+        <form  onSubmit = {handleSubmit} novalidate>
     
-                 <div class="form-group">
-                <label>First name: </label> 
-                <input type="text" onChange={ (e) => setUsername(e.target.value) }  value={ username } class="form-control" />
+            <div className="form-group">
+                <label>First Name: </label> 
+                <input name="username"  type="text"   value={values.username} onChange={handleChange}     className="form-control" />
             </div>
-                <div class="form-group">
+            {errors.firstname && <p className="error">{errors.firstname}</p>}
+
+                <div className="form-group">
                 <label>Last name: </label> 
-                <input type="text" onChange={ (e) => setLastname(e.target.value) }  value={ lastname } class="form-control" />
+                <input name="lastname"  type="text"   value={values.lastname}  onChange={ handleChange }   className="form-control" />
             </div>
-            <div class="form-group">
+
+            {errors.lastname && <p className="error">{errors.lastname}</p>}
+
+            <div className="form-group">
                 <label>Email Address: </label> 
-                <input type="text" onChange={ (e) => setEmail(e.target.value) }  value={ email } class="form-control" />
+                <input name="email"  type="text" value={values.email} onChange={handleChange}      className="form-control" />
             </div>
-                 <div class="form-group">
+            {errors.email && <p className="error">{errors.email}</p>}
+            {errors.email2 && <p className="error">{errors.email2}</p>}
+
+
+
+                 <div className="form-group">
                 <label>Password: </label>
-                <input type="text" onChange={ (e) => setPassword(e.target.value) }  value={ password } class="form-control" />
+                 <input   name="password"  type="password" value={values.password} onChange={handleChange} className="form-control" />
+            </div>
+            {errors.password && <p className="error">{errors.password}</p>}
+
+                 <div className="form-group">
+                <label>Cinfirm Password: </label>
+                 <input   name="conpass"  type="password" value={values.conpass} onChange={handleChange} className="form-control" />
             </div>
 
-             <div class="form-group">
-                <label>Confirmed Password: </label>
-                <input type="text" onChange={ (e) => setConpass(e.target.value) }  value={ conpass } class="form-control" />
-            </div>
+      
 
+            <button type="submit" className="btn btn-primary">Submit</button>
+         
 
-            <input type="submit" value="Create User" />
-<p> First name: { username } </p>
-<p> First name: { lastname } </p>
-<p> Email: { email } </p>
-<p> Password: { password } </p>
-<p> Confirmed Password: { conpass } </p>
 
         </form>
 
